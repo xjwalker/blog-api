@@ -2,8 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
@@ -16,7 +15,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property string password
  * @property boolean verified
  */
-class User extends Authenticatable implements JWTSubject
+class User extends Model implements JWTSubject
 {
     use Notifiable;
 
@@ -39,13 +38,6 @@ class User extends Authenticatable implements JWTSubject
     ];
 
     /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [];
-
-    /**
      * @inheritDoc
      */
     public function getJWTIdentifier()
@@ -59,5 +51,10 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    public function blogs()
+    {
+        return $this->hasMany(Blog::class);
     }
 }
