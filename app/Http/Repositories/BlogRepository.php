@@ -11,7 +11,7 @@ class BlogRepository
 
     /**
      * @param null $lastId
-     * @return \Illuminate\Database\Eloquent\Builder[]|Collection
+     * @return Collection
      */
     public function getMainBlogPosts($lastId = null)
     {

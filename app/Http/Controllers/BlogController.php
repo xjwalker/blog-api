@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\BlogRepository;
 use App\Models\Blog;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class BlogController extends Controller
@@ -35,7 +36,7 @@ class BlogController extends Controller
                 'author_name' => $blog->user->name,
                 'title' => $blog->title,
                 'content' => $blog->content,
-                'is_editable' => $this->isEditable($user, $blog->user->id),
+                'is_editable' => !is_null($user) ? $user->id == $blog->user->id : false,
                 'created_at' => $blog->created_at->toDateTimeString(),
             ];
         });
@@ -52,16 +53,6 @@ class BlogController extends Controller
                 'last_id' => $lastId ?? $blog->last()->id,
             ]
         ]);
-    }
-
-    /**
-     * @param $user
-     * @param $userId
-     * @return bool
-     */
-    private function isEditable($user, $userId)
-    {
-        return !is_null($user) ? $user->id == $userId : false;
     }
 
     public function getUserDashboard()

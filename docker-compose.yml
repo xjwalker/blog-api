@@ -24,6 +24,16 @@ services:
     links:
       - mysql
 
+  php_unit:
+    container_name: blog_php_ide
+    build: ./docker/php
+    working_dir: /app
+    volumes:
+      - .:/app
+      - ./docker/php/php.ini:/usr/local/etc/php/conf.d/custom.ini
+    links:
+      - mysql
+
   mysql:
     container_name: blog_mysql
     image: mysql:8.0
