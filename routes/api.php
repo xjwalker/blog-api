@@ -13,10 +13,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-
 Route::post('signup', 'AuthController@signup');
 Route::post('login', 'AuthController@login');
-
 
 Route::get('/', 'BlogController@getDashboard')->middleware('auth.jwt');
 

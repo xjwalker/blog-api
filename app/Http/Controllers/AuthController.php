@@ -14,10 +14,8 @@ class AuthController extends Controller
 {
     public function login(LoginRequest $request)
     {
-        $credentials = $request->input(['credentials']);
         /** @var User $user */
         $user = $request->input(['user']);
-
         return response()->json(['data' => $this->getAccessTokens($user)]);
     }
 
@@ -25,7 +23,7 @@ class AuthController extends Controller
     {
         $user = new User();
         $user->email = $request->input('email');
-        $user->password = Hash::make($request->input('email'));
+        $user->password = bcrypt($request->input('password'));
         $user->name = $request->input('username');
         $user->save();
 
