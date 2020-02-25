@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
  * Class Blog
  * @package App\Models
  * @property int id
+ * @property int user_id
  * @property string title
  * @property string content
  * @property Carbon created_at

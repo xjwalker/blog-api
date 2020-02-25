@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\BlogRepository;
+use App\Http\Requests\DashboardRequest;
 use App\Models\Blog;
-use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class BlogController extends Controller
 {
@@ -23,34 +24,21 @@ class BlogController extends Controller
         $this->blogRepository = $blogRepository;
     }
 
-    public function getDashboard(Request $request)
+    public function getDashboard(DashboardRequest $request)
     {
         $user = $request->user();
-        $lastId = $request->get('last_id');
-        $hasMore = false;
+        $lastId = $request->get('page_number');
 
-        $blog = $this->blogRepository->getMainBlogPosts($lastId)->map(function (Blog $blog) use ($user) {
-            return [
-                'id' => $blog->id,
-                'author_id' => $blog->user->id,
-                'author_name' => $blog->user->name,
-                'title' => $blog->title,
-                'content' => $blog->content,
-                'is_editable' => !is_null($user) ? $user->id == $blog->user->id : false,
-                'created_at' => $blog->created_at->toDateTimeString(),
-            ];
-        });
-
-        if ($blog->count() > BlogRepository::LIMIT) {
-            $hasMore = true;
-            $lastId = $blog->pop()['id'];
-        }
+        /** @var LengthAwarePaginator $blog */
+        $blog = $this->blogRepository->getMainBlogPosts($lastId);
 
         return response()->json([
-            'data' => $blog,
+            'data' => Collect($blog->items())->map(function (Blog $blog) use ($user) {
+                return $this->formatPost($blog, $user);
+            }),
             'pagination_data' => [
-                'has_more' => $hasMore,
-                'last_id' => $lastId ?? $blog->last()->id,
+                'has_more' => $blog->hasMorePages(),
+                'page' => $blog->currentPage(),
             ]
         ]);
     }
@@ -58,5 +46,42 @@ class BlogController extends Controller
     public function getUserDashboard()
     {
         // todo; get all the entries for the specific user
+        // todo; get twitter posts?
+        // todo; paginate blog
+        // todo; paginate twitter posts?
+
+
+    }
+
+    public function createBlog(Request $request)
+    {
+        $user = $request->user();
+        $title = $request->input('title');
+        $content = $request->input('content');
+
+        $blog = $this->blogRepository->create($user, $title, $content);
+
+        return response()->json(['data' => ['message' => 'Blog post created', 'blog' => $blog]]);
+    }
+
+    public function getBlogContent(Request $request)
+    {
+        $user = $request->user();
+        $blog = $this->blogRepository->getBlogPost($request->get('blog_id'));
+
+        return response()->json(['data' => $this->formatPost($blog, $user)]);
+    }
+
+    private function formatPost(Blog $blog, $user = null)
+    {
+        return [
+            'id' => $blog->id,
+            'author_id' => $blog->user_id,
+            'author_name' => $blog->user->name,
+            'title' => $blog->title,
+            'content' => $blog->content,
+            'is_editable' => !is_null($user) ? $user->id == $blog->user_id : false,
+            'created_at' => $blog->created_at->toDateTimeString(),
+        ];
     }
 }

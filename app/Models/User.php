@@ -2,7 +2,10 @@
 
 namespace App\Models;
 
+use Illuminate\Auth\Authenticatable;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
@@ -15,8 +18,10 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property string password
  * @property boolean verified
  */
-class User extends Model implements JWTSubject
+class User extends Model implements JWTSubject, AuthenticatableContract
 {
+    use Authenticatable;
+    use Authorizable;
     use Notifiable;
 
     /**
@@ -53,7 +58,7 @@ class User extends Model implements JWTSubject
         return [];
     }
 
-    public function blogs()
+    public function blog()
     {
         return $this->hasMany(Blog::class);
     }

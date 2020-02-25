@@ -1,10 +1,10 @@
 <?php
 
+
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
-use App\Models\User;
+use App\Models\Blog;
 use Faker\Generator as Faker;
-use Illuminate\Support\Str;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,11 +17,13 @@ use Illuminate\Support\Str;
 |
 */
 
-$factory->define(User::class, function (Faker $faker) {
+$factory->define(Blog::class, function (Faker $faker) {
+    $now = \Carbon\Carbon::now();
     return [
-        'name' => $faker->name,
-        'email' => $faker->unique()->safeEmail,
-        'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-        'verified' => false,
+        'title' => $faker->title,
+        'content' => $faker->text,
+        'user_id' => 0,
+        'created_at' => $now,
+        'updated_at' => $now,
     ];
 });
