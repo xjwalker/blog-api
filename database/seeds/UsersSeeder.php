@@ -18,7 +18,7 @@ class UsersSeeder extends Seeder
             [
                 'name' => 'kevinwalker',
                 'email' => 'kevin.walker@gmail.com',
-                'password' => Hash::make('PWD4kw!!'),
+                'password' => bcrypt('PWD4kw!!'),
                 'verified' => true,
                 'created_at' => $now,
                 'updated_at' => $now,
@@ -26,7 +26,7 @@ class UsersSeeder extends Seeder
             [
                 'name' => 'johnwalker',
                 'email' => 'john.walker@gmail.com',
-                'password' => Hash::make('PWD4jw!!'),
+                'password' => bcrypt('PWD4jw!!'),
                 'verified' => true,
                 'created_at' => $now,
                 'updated_at' => $now,
@@ -34,7 +34,7 @@ class UsersSeeder extends Seeder
             [
                 'name' => 'emiliawalker',
                 'email' => 'emilia.walker@gmail.com',
-                'password' => Hash::make('PWD4ew!!'),
+                'password' => bcrypt('PWD4ew!!'),
                 'verified' => true,
                 'created_at' => $now,
                 'updated_at' => $now,
