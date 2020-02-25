@@ -18,8 +18,8 @@ class SignUpTest extends TestCase
             'email' => $user->email,
             'password' => $user->password,
         ];
-        $response = $this->postJson('/api/signup', $params);
-        $response->assertStatus(200);
+        $r = $this->postJson('/api/signup', $params);
+        $r->assertStatus(200);
     }
 
     public function testSignUpDuplicatedEmailUsername()
@@ -30,7 +30,7 @@ class SignUpTest extends TestCase
             'email' => $user->email,
             'password' => $user->password,
         ];
-        $response = $this->postJson('/api/signup', $params);
-        $response->assertStatus(422);
+        $r = $this->postJson('/api/signup', $params);
+        $r->assertStatus(422);
     }
 }
