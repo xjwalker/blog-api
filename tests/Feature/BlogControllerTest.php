@@ -122,9 +122,26 @@ class BlogControllerTest extends TestCase
         $this->assertEquals($user->id, $data['data']['blog']['user_id']);
     }
 
+    public function testUpdatePost()
+    {
+        /** @var Blog $blog */
+        $user = factory(User::class)->create(['verified' => true]);
+        $blog = $this->blogRepository->create($user, 'title', 'body');
+
+        $h = ['Authorization' => 'Bearer ' . JWTAuth::fromUser($user)];
+        $params = ['blog_id' => $blog->id, 'data' => ['title' => 'new title', 'content' => 'new content']];
+
+        $r = $this->patchJson('/api/blog/', $params, $h);
+        $r->assertStatus(200);
+
+        $this->assertDatabaseHas('blogs', ['id' => $blog->id, 'title' => 'new title', 'content' => 'new content']);
+    }
+
     // todo; get test with invalid blog_id
     // todo; create blog with empty title|content
     // todo; create blog without a token
     // todo; delete test with invalid blog_id
     // todo; delete test being guest
+    // todo; update test being guest
+
 }

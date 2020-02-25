@@ -27,10 +27,9 @@ class BlogController extends Controller
     public function getDashboard(DashboardRequest $request)
     {
         $user = $request->user();
-        $lastId = $request->get('page_number');
 
         /** @var LengthAwarePaginator $blog */
-        $blog = $this->blogRepository->getMainBlogPosts($lastId);
+        $blog = $this->blogRepository->getMainBlogPosts();
 
         return response()->json([
             'data' => Collect($blog->items())->map(function (Blog $blog) use ($user) {
@@ -72,12 +71,19 @@ class BlogController extends Controller
 
     /**
      * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      * @throws \Exception
      */
     public function deleteBlog(Request $request)
     {
-        $blog = $this->blogRepository->delete($request->input('blog_id'));
-        return response()->json(['data' => ['message' => 'Blog deleted', 'blog' => $blog]]);
+        $this->blogRepository->delete($request->input('blog_id'));
+        return response()->json(['data']);
+    }
+
+    public function updateBlog(Request $request)
+    {
+        $data = $request->input('data');
+        $this->blogRepository->updateBlog($request->input('blog_id'), $data);
     }
 
     private function formatPost(Blog $blog, $user = null)

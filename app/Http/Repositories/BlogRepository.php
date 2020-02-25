@@ -42,15 +42,6 @@ class BlogRepository
     }
 
     /**
-     * @param $blogId
-     * @return Blog
-     */
-    public function getBlogPost($blogId)
-    {
-        return Blog::with('user')->find($blogId);
-    }
-
-    /**
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
     public function getMainBlogPosts()
@@ -59,5 +50,23 @@ class BlogRepository
             ->with('user')
             ->orderBy('created_at', 'DESC')
             ->paginate(self::LIMIT);
+    }
+
+    /**
+     * @param $blogId
+     * @return Blog
+     */
+    public function getBlogPost($blogId)
+    {
+        return Blog::with('user')->find($blogId);
+    }
+
+    public function updateBlog($blogId, $data)
+    {
+        $blog = Blog::query()->find($blogId);
+        $blog->fill($data);
+        $blog->update();
+
+        return $blog;
     }
 }
