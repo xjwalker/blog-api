@@ -76,8 +76,8 @@ class BlogController extends Controller
      */
     public function deleteBlog(Request $request)
     {
-        $this->blogRepository->delete($request->input('blog_id'));
-        return response()->json(['data']);
+        $blog = $this->blogRepository->delete($request->input('blog_id'));
+        return response()->json(['data' => ['message' => 'Blog post deleted', 'blog' => $blog]]);
     }
 
     public function updateBlog(Request $request)

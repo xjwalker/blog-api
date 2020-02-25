@@ -120,6 +120,8 @@ class BlogControllerTest extends TestCase
         $this->assertEquals($blog->title, $data['data']['blog']['title']);
         $this->assertEquals($blog->content, $data['data']['blog']['content']);
         $this->assertEquals($user->id, $data['data']['blog']['user_id']);
+
+        $this->assertDatabaseMissing('blogs', ['id' => $blog->id]);
     }
 
     public function testUpdatePost()
