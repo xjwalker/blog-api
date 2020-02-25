@@ -2,16 +2,66 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\BlogRepository;
+use App\Models\Blog;
 use Illuminate\Http\Request;
 
 class BlogController extends Controller
 {
-    public function getDashboard()
+    /**
+     * @var BlogRepository
+     */
+    private $blogRepository;
+
+    /**
+     * BlogController constructor.
+     * @param BlogRepository $blogRepository
+     */
+    public function __construct(BlogRepository $blogRepository)
     {
-        // todo; get the three latest records from blogs table
-        // todo; each blog has author, creation_date, link to user profile,
-        // todo; if we have a user in the request then we load the authors(users and add editable flag)
-        // todo; add pagination
+        $this->blogRepository = $blogRepository;
+    }
+
+    public function getDashboard(Request $request)
+    {
+        $user = $request->user();
+        $lastId = $request->get('last_id');
+        $hasMore = false;
+
+        $blog = $this->blogRepository->getMainBlogPosts($lastId)->map(function (Blog $blog) use ($user) {
+            return [
+                'id' => $blog->id,
+                'author_id' => $blog->user->id,
+                'author_name' => $blog->user->name,
+                'title' => $blog->title,
+                'content' => $blog->content,
+                'is_editable' => $this->isEditable($user, $blog->user->id),
+                'created_at' => $blog->created_at->toDateTimeString(),
+            ];
+        });
+
+        if ($blog->count() > BlogRepository::LIMIT) {
+            $hasMore = true;
+            $lastId = $blog->pop()['id'];
+        }
+
+        return response()->json([
+            'data' => $blog,
+            'pagination_data' => [
+                'has_more' => $hasMore,
+                'last_id' => $lastId ?? $blog->last()->id,
+            ]
+        ]);
+    }
+
+    /**
+     * @param $user
+     * @param $userId
+     * @return bool
+     */
+    private function isEditable($user, $userId)
+    {
+        return !is_null($user) ? $user->id == $userId : false;
     }
 
     public function getUserDashboard()
