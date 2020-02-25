@@ -70,6 +70,16 @@ class BlogController extends Controller
         return response()->json(['data' => $this->formatPost($blog, $user)]);
     }
 
+    /**
+     * @param Request $request
+     * @throws \Exception
+     */
+    public function deleteBlog(Request $request)
+    {
+        $blog = $this->blogRepository->delete($request->input('blog_id'));
+        return response()->json(['data' => ['message' => 'Blog deleted', 'blog' => $blog]]);
+    }
+
     private function formatPost(Blog $blog, $user = null)
     {
         return [

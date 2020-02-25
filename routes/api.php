@@ -19,7 +19,7 @@ Route::post('login', 'AuthController@login');
 Route::get('/', 'BlogController@getDashboard')->middleware('auth.jwt');
 
 Route::group(['prefix' => 'blog'], function () {
-    Route::get('/', 'BlogController@getBlogContent');
+    Route::get('/', 'BlogController@getBlogContent')->middleware('auth.jwt');;
     Route::group(['middleware' => 'jwt.auth:api'], function () {
         Route::post('/', 'BlogController@createBlog');
         Route::patch('/', 'BlogController@updateBlog');

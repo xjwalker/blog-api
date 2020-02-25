@@ -4,6 +4,7 @@ namespace App\Http;
 
 use App\Models\Blog;
 use App\Models\User;
+use DemeterChain\B;
 use Illuminate\Database\Eloquent\Collection;
 
 class BlogRepository
@@ -30,6 +31,19 @@ class BlogRepository
     /**
      * @param $blogId
      * @return Blog
+     * @throws \Exception
+     */
+    public function delete($blogId)
+    {
+        /** @var Blog $blog */
+        $blog = $this->getBlogPost($blogId);
+        $blog->delete();
+        return $blog;
+    }
+
+    /**
+     * @param $blogId
+     * @return Blog
      */
     public function getBlogPost($blogId)
     {
@@ -37,10 +51,9 @@ class BlogRepository
     }
 
     /**
-     * @param null $pageNumber
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public function getMainBlogPosts($pageNumber = null)
+    public function getMainBlogPosts()
     {
         return Blog::query()
             ->with('user')
