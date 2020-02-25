@@ -49,8 +49,6 @@ class BlogController extends Controller
         // todo; get twitter posts?
         // todo; paginate blog
         // todo; paginate twitter posts?
-
-
     }
 
     public function createBlog(Request $request)
